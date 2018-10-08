@@ -41,7 +41,7 @@ classdef a2main < handle
         end
         function a = updateEndEffectorPos(self)
             q = self.cyton.model.getpos();
-            a = self.cyton.model.fkine(q);            
+            a = self.cyton.model.fkine(q);
         end    
     end
 end
