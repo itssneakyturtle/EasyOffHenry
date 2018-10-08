@@ -5,7 +5,7 @@ classdef callEnvironment < handle
     properties
         Property1
     end
-    
+    % asd
     methods(Static)
         %% 
         function self = callEnvironment()
@@ -100,7 +100,7 @@ classdef callEnvironment < handle
         end
         %% 
         function shower()
-            [f,v,data] = plyread('shower.ply','tri');
+            [f,v,data] = plyread('glass.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
             % Move center point to origin
@@ -110,8 +110,8 @@ classdef callEnvironment < handle
 %             pose = eye(4);
             % model offsets
             zOffset = 0.3;
-            yOffset = -0.2;
-            xOffset = 0;
+            yOffset = 0;
+            xOffset = -0.1;
             % Scale the colours to be 0-to-1 (they are originally 0-to-255
             vertexColours = [data.vertex.red, data.vertex.green, data.vertex.blue] / 255;
             % Then plot the trisurf
