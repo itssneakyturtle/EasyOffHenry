@@ -17,9 +17,7 @@ classdef callEnvironment < handle
             self.irsensor();
             
         end
-        %%
-        
-        
+
         function controlBoard()
             [f,v,data] = plyread('control.ply','tri');
             % Get vertex count
