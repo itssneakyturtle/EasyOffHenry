@@ -17,9 +17,18 @@ classdef callEnvironment < handle
             self.irsensor();
             
         end
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+=======
+<<<<<<< HEAD
+        %% 
+>>>>>>> 222700ad29aee76d165e873bb0226096a63ed931
         function controlBoard(self)
 
         
+>>>>>>> 984f052215e90675fd51ec8ad9ddc3adb9f6210c
         function controlBoard()
 >>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('control.ply','tri');
