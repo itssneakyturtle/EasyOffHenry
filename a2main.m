@@ -39,6 +39,10 @@ classdef a2main < handle
             qNew(1,joint) = deg2rad(angle);
             self.cyton.model.animate(qNew)
         end
+        function a = updateEndEffectorPos(self)
+            q = self.cyton.model.getpos();
+            a = self.cyton.model.fkine(q);
+        end    
     end
 end
 
