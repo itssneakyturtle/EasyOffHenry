@@ -3,10 +3,17 @@ classdef callEnvironment < handle
     %   Detailed explanation goes here
     
     properties
+<<<<<<< HEAD
         Property1
     end
     % asd
     methods
+=======
+        
+    end
+    
+    methods(Static)
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
         %% 
         function self = callEnvironment()
             self.controlBoard();
@@ -15,9 +22,21 @@ classdef callEnvironment < handle
             self.safetyCone();
             self.shower();
             self.irsensor();
+<<<<<<< HEAD
         end
         %% 
         function controlBoard(self)
+=======
+            
+            loadPly('ply\control.ply', self.controlBoardLoc);
+            loadPly('ply\RobotBase.ply',self.robotBaseLoc);
+            
+        end
+        %%
+        
+        
+        function controlBoard()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('control.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -37,7 +56,11 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
+<<<<<<< HEAD
         function RobotBase(self)
+=======
+        function RobotBase()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('RobotBase.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -57,7 +80,11 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
+<<<<<<< HEAD
         function cytonBase(self)
+=======
+        function cytonBase()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('cytonbase.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -77,7 +104,11 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
+<<<<<<< HEAD
         function safetyCone(self)
+=======
+        function safetyCone()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('safetycone.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -99,7 +130,11 @@ classdef callEnvironment < handle
             end
         end
         %% 
+<<<<<<< HEAD
         function shower(self)
+=======
+        function shower()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('glass.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -119,7 +154,11 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
+<<<<<<< HEAD
         function irsensor(self)
+=======
+        function irsensor()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('irsensor.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);

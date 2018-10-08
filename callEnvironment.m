@@ -3,10 +3,15 @@ classdef callEnvironment < handle
     %   Detailed explanation goes here
     
     properties
-        Property1
+        
     end
+<<<<<<< HEAD
     % asd
     methods
+=======
+    
+    methods(Static)
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
         %% 
         function self = callEnvironment()
             self.controlBoard();
@@ -15,9 +20,17 @@ classdef callEnvironment < handle
             self.safetyCone();
             self.shower();
             self.irsensor();
+            
         end
+<<<<<<< HEAD
         %% 
         function controlBoard(self)
+=======
+        %%
+        
+        
+        function controlBoard()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('control.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
