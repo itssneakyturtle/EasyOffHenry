@@ -16,6 +16,9 @@ classdef callEnvironment < handle
             self.shower();
             self.irsensor();
             
+            loadPly('ply\control.ply', self.controlBoardLoc);
+            loadPly('ply\RobotBase.ply',self.robotBaseLoc);
+            
         end
         %%
         
