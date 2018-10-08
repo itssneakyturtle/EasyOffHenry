@@ -7,11 +7,7 @@ classdef Cyton < handle
         toolModelFilename = []; % Available are: 'DabPrintNozzleTool.ply';        
         toolParametersFilename = []; % Available are: 'DabPrintNozzleToolParameters.mat'; 
     end
-<<<<<<< HEAD
-    %sdfghjk
-=======
-    %% Testing GIT
->>>>>>> 0a8af5e01bb7a090d42997379bb972e1d40dc6af
+
     methods
         function self = Cyton()
         self.GetCytonRobot();
