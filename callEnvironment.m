@@ -5,8 +5,13 @@ classdef callEnvironment < handle
     properties
         
     end
+<<<<<<< HEAD
+    % asd
+    methods
+=======
     
     methods(Static)
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
         %% 
         function self = callEnvironment()
             self.controlBoard();
@@ -17,8 +22,19 @@ classdef callEnvironment < handle
             self.irsensor();
             
         end
+<<<<<<< HEAD
 
+=======
+<<<<<<< HEAD
+        %% 
+        function controlBoard(self)
+=======
+        %%
+        
+        
+>>>>>>> 984f052215e90675fd51ec8ad9ddc3adb9f6210c
         function controlBoard()
+>>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
             [f,v,data] = plyread('control.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -38,7 +54,7 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
-        function RobotBase()
+        function RobotBase(self)
             [f,v,data] = plyread('RobotBase.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -58,7 +74,7 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
-        function cytonBase()
+        function cytonBase(self)
             [f,v,data] = plyread('cytonbase.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -78,7 +94,7 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
-        function safetyCone()
+        function safetyCone(self)
             [f,v,data] = plyread('safetycone.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -100,7 +116,7 @@ classdef callEnvironment < handle
             end
         end
         %% 
-        function shower()
+        function shower(self)
             [f,v,data] = plyread('glass.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
@@ -120,7 +136,7 @@ classdef callEnvironment < handle
                 ,'FaceVertexCData',vertexColours,'EdgeColor','interp','EdgeLighting','flat');
         end
         %% 
-        function irsensor()
+        function irsensor(self)
             [f,v,data] = plyread('irsensor.ply','tri');
             % Get vertex count
             VertexCount = size(v,1);
