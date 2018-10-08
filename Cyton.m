@@ -3,9 +3,7 @@ classdef Cyton < handle
         model;
         base;
         name;
-        workspace;
-        %workspace = [-1.2 1.2 -1.2 1.2 -0.02 1];  
-        %workspace = [-2 2 -2 2 -2 2];  
+        workspace; 
     end
 
     methods

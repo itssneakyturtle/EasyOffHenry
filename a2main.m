@@ -33,6 +33,7 @@ classdef a2main < handle
             loadPly('ply\shower.ply',self.showerLoc);
             loadPly('ply\irsensor.ply',self.irSensorLoc);
         end
+        %% Function to update all joint angles when sliders are used
         function updateJoint(self,joint,angle)
             qNew = self.cyton.model.getpos();
             qNew(1,joint) = deg2rad(angle);
