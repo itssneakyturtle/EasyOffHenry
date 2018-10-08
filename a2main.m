@@ -42,6 +42,7 @@ classdef a2main < handle
         function a = updateEndEffectorPos(self)
             q = self.cyton.model.getpos();
             a = self.cyton.model.fkine(q);
+            RPY = tr2rpy(a,'deg');
         end    
     end
 end
