@@ -38,7 +38,7 @@ classdef Cyton < handle
         % colour them in if data is available 
         function PlotAndColourRobot(self)
             for linkIndex = 1:self.model.n
-                [ faceData, vertexData, plyData{linkIndex + 1} ] = plyread(['Cyton',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
+                [ faceData, vertexData, plyData{linkIndex + 1} ] = plyread(['ply\Cyton',num2str(linkIndex),'.ply'],'tri'); %#ok<AGROW>
                 self.model.faces{linkIndex + 1} = faceData;
                 self.model.points{linkIndex + 1} = vertexData;
             end

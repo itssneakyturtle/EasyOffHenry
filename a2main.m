@@ -32,8 +32,11 @@ classdef a2main < handle
 %             loadPly('ply\safetycone.ply',self.safetyConeLoc);
             loadPly('ply\shower.ply',self.showerLoc);
             loadPly('ply\irsensor.ply',self.irSensorLoc);
-            
-
+        end
+        function updateJoint(self,joint,angle)
+            qNew = self.cyton.model.getpos();
+            qNew(1,joint) = deg2rad(angle);
+            self.cyton.model.animate(qNew)
         end
     end
 end

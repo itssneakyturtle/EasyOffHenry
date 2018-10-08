@@ -5,14 +5,9 @@ classdef callEnvironment < handle
     properties
         
     end
-<<<<<<< HEAD
-    % asd
     methods
-=======
     
     methods(Static)
->>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
-        %% 
         function self = callEnvironment()
             self.controlBoard();
             self.RobotBase();
@@ -22,12 +17,8 @@ classdef callEnvironment < handle
             self.irsensor();
             
         end
-<<<<<<< HEAD
-        %% 
         function controlBoard(self)
-=======
-        %%
-        
+
         
         function controlBoard()
 >>>>>>> 8ab4d9ffefdeed697f080cd14a92e252cef01882
