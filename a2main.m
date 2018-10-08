@@ -39,10 +39,10 @@ classdef a2main < handle
             qNew(1,joint) = deg2rad(angle);
             self.cyton.model.animate(qNew)
         end
-        function a = updateEndEffectorPos(self)
+        function [xyz,rpy] = updateEndEffectorPos(self)
             q = self.cyton.model.getpos();
-            a = self.cyton.model.fkine(q);
-            RPY = tr2rpy(a,'deg');
+            xyz = self.cyton.model.fkine(q);
+            rpy = tr2rpy(xyz,'deg');
         end    
     end
 end
