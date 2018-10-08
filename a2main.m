@@ -21,7 +21,7 @@ classdef a2main < handle
             %% Set up variables
             self.controlBoardLoc = self.base * transl([0.5 0.5 0.2]);
             self.robotBaseLoc = self.base * transl([0 0 0.1]);
-            self.cytonBaseLoc = self.base * transl([0 0 0.5]);
+            self.cytonBaseLoc = self.base * transl([0 0 0.1]);
             self.showerLoc = self.base * transl([-0.1 0 0.3]);
             self.irSensorLoc = self.base * transl([-0.2 0 0.3]);
             
@@ -30,7 +30,7 @@ classdef a2main < handle
             loadPly('ply\RobotBase.ply',self.robotBaseLoc);
             loadPly('ply\cytonbase.ply',self.cytonBaseLoc);
 %             loadPly('ply\safetycone.ply',self.safetyConeLoc);
-            loadPly('ply\shower.ply',self.showerLoc);
+            loadPly('ply\glass.ply',self.showerLoc);
             loadPly('ply\irsensor.ply',self.irSensorLoc);
         end
         function updateJoint(self,joint,angle)
