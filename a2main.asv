@@ -18,8 +18,6 @@ classdef a2main < handle
         BLShowerLoc;
         BMShowerLoc;
         BRShowerLoc;
-        MLShowerLoc;
-        MMShowerLoc;
         MRShowerLoc;
         waypoint;
     end
@@ -50,9 +48,7 @@ classdef a2main < handle
             self.BLShowerLoc = transl(-0.25,-0.1,0.1)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
             self.BMShowerLoc = transl(-0.25,0,0.1)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
             self.BRShowerLoc = transl(-0.25,0.1,0.1)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-            self.MLShowerLoc = transl(-0.25,-0.1,0.225)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-            self.MMShowerLoc = transl(-0.25,0,0.225)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-            self.MRShowerLoc = transl(-0.25,0.1,0.225)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
+            
             self.waypoint = transl(-0.1,0,0.3)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
             
         end
@@ -72,23 +68,17 @@ classdef a2main < handle
         function Clean(self)
             p = self.getendpos(self.TLShowerLoc);
             self.MoveTo(p);
-            p = self.getendpos(self.MLShowerLoc);
-            self.MoveTo(p);
             p = self.getendpos(self.BLShowerLoc);
             self.MoveTo(p);
             p = self.getendpos(self.waypoint);
             self.MoveTo(p);
             p = self.getendpos(self.TMShowerLoc);
             self.MoveTo(p);
-            p = self.getendpos(self.MMShowerLoc);
-            self.MoveTo(p);
             p = self.getendpos(self.BMShowerLoc);
             self.MoveTo(p);
             p = self.getendpos(self.waypoint);
             self.MoveTo(p);
             p = self.getendpos(self.TRShowerLoc);
-            self.MoveTo(p);
-            p = self.getendpos(self.MRShowerLoc);
             self.MoveTo(p);
             p = self.getendpos(self.BRShowerLoc);
             self.MoveTo(p);
