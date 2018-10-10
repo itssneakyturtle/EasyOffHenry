@@ -75,42 +75,43 @@ classdef a2main < handle
             rpy = tr2rpy(xyz,'deg');
         end
         %% Function to identify path for cleaning
-        function [a,b,c,d,e,f,g,h,i,j,k] = Clean(self)
+        function [a,b,c,d,e,f,g,h,i,j,k,l] = Clean(self)
             steps = 50;
             
             q = self.getendpos(self.T1ShowerLoc);
-            a = self.MoveTo(q);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T2ShowerLoc);
-            b = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T3ShowerLoc);
-            c= self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T4ShowerLoc);
-            d=self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T5ShowerLoc);
-            e = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            p = self.getendpos(self.waypoint);
-            f = self.MoveTo(p);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M1ShowerLoc);
-            g = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M2ShowerLoc);
-            h = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M3ShowerLoc);
-            i = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M4ShowerLoc);
-            j = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M5ShowerLoc);
-            k = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-                      
+            self.qMatrix = self.MoveTo(q);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T2ShowerLoc);
+%             self.qMatrix = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             self.rosMove(a);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T3ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T4ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T5ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             p = self.getendpos(self.waypoint);
+%             self.MoveTo(p);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M1ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M2ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M3ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M4ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%             
+%             [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M5ShowerLoc);
+%             self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
+%                       
         end
         %% Function to move robot to desired location and candy if conditions are met
         function p = getendpos(self, pend)
