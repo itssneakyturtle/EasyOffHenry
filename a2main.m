@@ -25,6 +25,7 @@ classdef a2main < handle
         waypoint;
         qMatrix;
         mybum;
+        estopflag;
     end
     
     methods
@@ -60,6 +61,20 @@ classdef a2main < handle
             self.M5ShowerLoc = transl(-0.3,0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             
             self.waypoint = transl(-0.1,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+            
+%             self.T1ShowerLoc = transl(-0.1,-0.25,0.35)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
+%             self.T2ShowerLoc = transl(-0.05,-0.3,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+%             self.T3ShowerLoc = transl(0,-0.3,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+%             self.T4ShowerLoc = transl(0.05,-0.3,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+%             self.T5ShowerLoc = transl(0.1,-0.25,0.35)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
+%             
+%             self.M1ShowerLoc = transl(-0.1,-0.25,0.3)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
+%             self.M2ShowerLoc = transl(-0.05,-0.,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+%             self.M3ShowerLoc = transl(0,-0.3,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+%             self.M4ShowerLoc = transl(0.05,-0.3,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+%             self.M5ShowerLoc = transl(0.1,-0.25,0.3)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
+%             
+%             self.waypoint = transl(0,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             
         end
         %% Function to update all joint angles when sliders are used
@@ -122,10 +137,15 @@ classdef a2main < handle
             steps = 50;
             qcurrent = self.cyton.model.getpos(); % Get current joint angles
             qMatrix = TrapProfile(qcurrent,qend,steps); % Use Trapezoidal Profile Method to obtain qMatrix
-            for i = 1:1:steps
-                self.cyton.model.animate(qMatrix(i,:));
-                drawnow;
-            end
+%             for i = 1:1:steps
+%                 if self.estopflag ~= 0
+%                     while self.estopflag ~= 0
+%                         pause(0.1);
+%                     end
+%                 end
+%                 self.cyton.model.animate(qMatrix(i,:));
+%                 drawnow;
+%             end
         end
         %% update next location for RMRC
         function [startTransl,endTransl,startRPY,endRPY] = updateLocs(self,nextLoc)
@@ -202,10 +222,17 @@ classdef a2main < handle
                 positionError(:,i) = deltaX;                            % For plotting
                 angleError(:,i) = deltaTheta;                           % For plotting
             end
-            for i = 1:steps
-                    self.cyton.model.animate(qMatrix(i,:));
-                    drawnow;                    
-            end
+%             for i = 1:steps
+%                 if self.estopflag ~= 0
+%                     while self.estopflag ~= 0
+%                         pause(0.1);
+%                     end
+%                 end
+%                     self.cyton.model.animate(qMatrix(i,:));
+%                     [a,b] = self.updateEndEffectorPos();
+%                     
+%                     drawnow;                    
+%             end
             % Plotting movement
     %             figure(1)
     %             plot3(x(1,:),x(2,:),x(3,:),'k.','LineWidth',1)
@@ -229,8 +256,10 @@ classdef a2main < handle
     %             end
     %         end
          end
-         function a = rosMove(self)
-            a = self.qMatrix
+         function sim_cytonanimate(self,qMatrix)
+             self.cyton.model.animate(qMatrix);
+             drawnow;
          end
+         
     end
 end
