@@ -11,6 +11,8 @@ classdef a2main < handle
         cytonBaseLoc;
         safetyConeLoc;
         showerLoc;
+        cagefrontLoc;
+        cagebackLoc;
         irSensorLoc;
         T1ShowerLoc;
         T2ShowerLoc;
@@ -22,7 +24,9 @@ classdef a2main < handle
         M3ShowerLoc;
         M4ShowerLoc;
         M5ShowerLoc;
-        waypoint;
+        waypoint1;
+        waypoint2;
+        waypoint3;
         qMatrix;
         mybum;
         estopflag;
@@ -33,20 +37,22 @@ classdef a2main < handle
             hold on;
             self.cyton = Cyton('cyton',self.base,self.workspace);
             %% Set up variables
-            self.controlBoardLoc = self.base * transl([0.5 0.5 0.2]);
+            self.controlBoardLoc = self.base * transl([1 0.5 0.075]);
             self.robotBaseLoc = transl([0 0 0.078]);
             self.cytonBaseLoc = transl([0 0 0.028]);
             self.showerLoc = self.base * transl([-0.3 0 0.15]);
-            self.irSensorLoc = self.base * transl([-0.2 0 0.3]);
-            
+            self.irSensorLoc = self.base * transl([-0.1 0.7 0])*trotz(pi/2);
+            self.cagefrontLoc = self.base * transl([-0.2 -0.5 0.3]);
+            self.cagebackLoc = self.base * transl([0 0.5 0.3]);
             %% Setup Environment
             loadPly('ply/control.ply', self.controlBoardLoc);
             loadPly('ply/RobotBase.ply',self.robotBaseLoc);
             loadPly('ply/cytonbase.ply',self.cytonBaseLoc);
 %             loadPly('ply\safetycone.ply',self.safetyConeLoc);
             loadPly('ply/glass.ply',self.showerLoc);
-            loadPly('ply/irsensor.ply',self.irSensorLoc);
-            
+            loadPly('ply/IR.ply',self.irSensorLoc);
+            loadPly('ply/cagefront.ply',self.cagefrontLoc);
+            loadPly('ply/cageback.ply',self.cagebackLoc);
             %% glass cleaning locations
             self.T1ShowerLoc = transl(-0.3,-0.1,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.T2ShowerLoc = transl(-0.3,-0.05,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
@@ -60,28 +66,19 @@ classdef a2main < handle
             self.M4ShowerLoc = transl(-0.3,0.05,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.M5ShowerLoc = transl(-0.3,0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             
-            self.waypoint = transl(-0.1,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-            
-%             self.T1ShowerLoc = transl(-0.1,-0.25,0.35)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-%             self.T2ShowerLoc = transl(-0.05,-0.3,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-%             self.T3ShowerLoc = transl(0,-0.3,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-%             self.T4ShowerLoc = transl(0.05,-0.3,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-%             self.T5ShowerLoc = transl(0.1,-0.25,0.35)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-%             
-%             self.M1ShowerLoc = transl(-0.1,-0.25,0.3)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-%             self.M2ShowerLoc = transl(-0.05,-0.,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-%             self.M3ShowerLoc = transl(0,-0.3,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-%             self.M4ShowerLoc = transl(0.05,-0.3,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-%             self.M5ShowerLoc = transl(0.1,-0.25,0.3)*trotx(pi)*troty(-pi/2)*trotz(-pi/2);
-%             
-%             self.waypoint = transl(0,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-            
+            self.waypoint1 = transl(-0.1,0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+            self.waypoint2 = transl(-0.1,0,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+            self.waypoint3 = transl(-0.1,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+        end
+        %%
+        function qCurrent = getCurrentPos(self)
+            qCurrent = self.cyton.model.getpos();
         end
         %% Function to update all joint angles when sliders are used
-        function updateJoint(self,joint,angle)
+        function qNew = updateJoint(self,joint,inputangle)
             qNew = self.cyton.model.getpos();
-            qNew(1,joint) = deg2rad(angle);
-            self.cyton.model.animate(qNew)
+            qNew(1,joint) = deg2rad(inputangle);
+%             self.cyton.model.animate(qNew)
         end
         %% update xyz rpy
         function [xyz,rpy] = updateEndEffectorPos(self)
@@ -89,44 +86,7 @@ classdef a2main < handle
             xyz = self.cyton.model.fkine(q);
             rpy = tr2rpy(xyz,'deg');
         end
-        %% Function to identify path for cleaning
-        function [a,b,c,d,e,f,g,h,i,j,k] = Clean(self)
-            steps = 50;
-            
-            q = self.getendpos(self.T1ShowerLoc);
-            a = self.MoveTo(q);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T2ShowerLoc);
-            b = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T3ShowerLoc);
-            c= self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T4ShowerLoc);
-            d=self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.T5ShowerLoc);
-            e = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            p = self.getendpos(self.waypoint);
-            f = self.MoveTo(p);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M1ShowerLoc);
-            g = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M2ShowerLoc);
-            h = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M3ShowerLoc);
-            i = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M4ShowerLoc);
-            j = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-            
-            [startTransl,endTransl,startRPY,endRPY] = self.updateLocs(self.M5ShowerLoc);
-            k = self.RMRC(startTransl,endTransl,startRPY,endRPY,steps);
-                      
-        end
+
         %% Function to move robot to desired location and candy if conditions are met
         function p = getendpos(self, pend)
              qGuess = [0,pi/4,pi/2,pi/4,0,pi,pi]; % Guessed joint positions for ikcon
