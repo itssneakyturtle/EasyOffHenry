@@ -4,6 +4,7 @@ classdef Cyton < handle
         base;
         name;
         workspace; 
+        link;
     end
 
     methods
@@ -29,7 +30,7 @@ classdef Cyton < handle
         L7 = Link('d',0.17,'a',0,'alpha',0,'offset', -pi/2,'qlim',[deg2rad(-150),deg2rad(150)]);
         
         self.model = SerialLink([L1 L2 L3 L4 L5 L6 L7],'name',self.name,'base',self.base);
-
+        self.link = self.model.links;  
         end
         %% PlotAndColourRobot
         % Given a robot index, add the glyphs (vertices and faces) and

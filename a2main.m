@@ -30,13 +30,18 @@ classdef a2main < handle
         qMatrix;
         mybum;
         estopflag;
+        vertex;
+        faces;
+        faceNormals;
+        prismCenterpnt;
     end
     
     methods
         function self = a2main()
             hold on;
             self.cyton = Cyton('cyton',self.base,self.workspace);
-            %% Set up variables
+            
+            % Set up variables
             self.controlBoardLoc = self.base * transl([1 0.5 0.075]);
             self.robotBaseLoc = transl([0 0 0.078]);
             self.cytonBaseLoc = transl([0 0 0.028]);
@@ -44,36 +49,42 @@ classdef a2main < handle
             self.irSensorLoc = self.base * transl([-0.1 0.7 0])*trotz(pi/2);
             self.cagefrontLoc = self.base * transl([-0.2 -0.5 0.3]);
             self.cagebackLoc = self.base * transl([0 0.5 0.3]);
-            %% Setup Environment
+            
+            % Setup Environment
             loadPly('ply/control.ply', self.controlBoardLoc);
             loadPly('ply/RobotBase.ply',self.robotBaseLoc);
             loadPly('ply/cytonbase.ply',self.cytonBaseLoc);
-%             loadPly('ply\safetycone.ply',self.safetyConeLoc);
             loadPly('ply/glass.ply',self.showerLoc);
             loadPly('ply/IR.ply',self.irSensorLoc);
             loadPly('ply/cagefront.ply',self.cagefrontLoc);
             loadPly('ply/cageback.ply',self.cagebackLoc);
-            %% glass cleaning locations
+            
+            % glass cleaning locations
+            % top 
             self.T1ShowerLoc = transl(-0.3,-0.1,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.T2ShowerLoc = transl(-0.3,-0.05,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.T3ShowerLoc = transl(-0.3,0,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.T4ShowerLoc = transl(-0.3,0.05,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.T5ShowerLoc = transl(-0.3,0.1,0.35)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-            
+            % mid
             self.M1ShowerLoc = transl(-0.3,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.M2ShowerLoc = transl(-0.3,-0.05,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.M3ShowerLoc = transl(-0.3,0,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.M4ShowerLoc = transl(-0.3,0.05,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.M5ShowerLoc = transl(-0.3,0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
-            
+            % waypoint
             self.waypoint1 = transl(-0.1,0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.waypoint2 = transl(-0.1,0,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
             self.waypoint3 = transl(-0.1,-0.1,0.3)*trotx(-pi/2)*troty(-pi/2)*trotz(-pi/2);
+            
+            % rectangular prism for collsion checking 
+            self.prismCenterpnt = [-0.5,0,0.25];
+            side = [0.4 0.6 0.5];
+            plotOptions.plotFaces = true;
+            [self.vertex,self.faces,self.faceNormals] = RectangularPrism(self.prismCenterpnt-side/2, self.prismCenterpnt+side/2,plotOptions);
+            
         end
-        %%
-        function qCurrent = getCurrentPos(self)
-            qCurrent = self.cyton.model.getpos();
-        end
+
         %% Function to update all joint angles when sliders are used
         function qNew = updateJoint(self,joint,inputangle)
             qNew = self.cyton.model.getpos();
@@ -92,20 +103,11 @@ classdef a2main < handle
              qGuess = [0,pi/4,pi/2,pi/4,0,pi,pi]; % Guessed joint positions for ikcon
             p = self.cyton.model.ikcon(pend,qGuess);
         end
-        %% 
+        %% jtraj qMatrix movement setup
         function qMatrix = MoveTo(self, qend) 
-            steps = 50;
+            steps = 25;
             qcurrent = self.cyton.model.getpos(); % Get current joint angles
             qMatrix = TrapProfile(qcurrent,qend,steps); % Use Trapezoidal Profile Method to obtain qMatrix
-%             for i = 1:1:steps
-%                 if self.estopflag ~= 0
-%                     while self.estopflag ~= 0
-%                         pause(0.1);
-%                     end
-%                 end
-%                 self.cyton.model.animate(qMatrix(i,:));
-%                 drawnow;
-%             end
         end
         %% update next location for RMRC
         function [startTransl,endTransl,startRPY,endRPY] = updateLocs(self,nextLoc)
@@ -115,7 +117,7 @@ classdef a2main < handle
             startRPY = tr2rpy(startTransl(1:3,1:3));
             endRPY = tr2rpy(endTransl(1:3,1:3));
         end
-        %% RMRC
+        %% RMRC qMatrix movement setup
          function qMatrix = RMRC(self,startTransl,endTransl,startRPY,endRPY,steps)
             startXYZ = startTransl(1:3,4)';
             endXYZ = endTransl(1:3,4)';
@@ -182,45 +184,116 @@ classdef a2main < handle
                 positionError(:,i) = deltaX;                            % For plotting
                 angleError(:,i) = deltaTheta;                           % For plotting
             end
-%             for i = 1:steps
-%                 if self.estopflag ~= 0
-%                     while self.estopflag ~= 0
-%                         pause(0.1);
-%                     end
+         end
+        %% animate cyton          
+        function sim_cytonanimate(self,qMatrix)
+            self.cyton.model.animate(qMatrix);
+            drawnow;
+        end
+        %% get joint angle positions (rads)
+        function qCurrent = getCurrentPos(self)
+            qCurrent = self.cyton.model.getpos();
+        end 
+        %% fkine cyton
+        function endPos = getfkine(self,q)
+            endPos = self.cyton.model.fkine(q);
+        end
+        %% ikcon cyton
+        function newq = getikcon(self,endPos)
+            newq = self.cyton.model.ikcon(endPos);
+        end 
+%% add function for collision checking
+%% determine joint locations/transforms
+function [ transforms ] = GetLinkPoses(self,q)
+
+links = self.cyton.link;
+transforms = zeros(4, 4, length(links) + 1);
+transforms(:,:,1) = self.cyton.base;
+
+for i = 1:length(links)
+    L = links(1,i);
+    
+    current_transform = transforms(:,:, i);
+    
+    current_transform = current_transform * trotz(q(1,i) + L.offset) * ...
+    transl(0,0, L.d) * transl(L.a,0,0) * trotx(L.alpha);
+    transforms(:,:,i + 1) = current_transform;
+end
+end
+
+%% IsIntersectionPointInsideTriangle
+% Given a point which is known to be on the same plane as the triangle
+% determine if the point is 
+% inside (result == 1) or 
+% outside a triangle (result ==0 )
+function result = IsIntersectionPointInsideTriangle(self,intersectP,triangleVerts)
+
+u = triangleVerts(2,:) - triangleVerts(1,:);
+v = triangleVerts(3,:) - triangleVerts(1,:);
+
+uu = dot(u,u);
+uv = dot(u,v);
+vv = dot(v,v);
+
+w = intersectP - triangleVerts(1,:);
+wu = dot(w,u);
+wv = dot(w,v);
+
+D = uv * uv - uu * vv;
+
+% Get and test parametric coords (s and t)
+s = (uv * wv - vv * wu) / D;
+if (s < 0.0 || s > 1.0)        % intersectP is outside Triangle
+    result = 0;
+    return;
+end
+
+t = (uv * wu - uu * wv) / D;
+if (t < 0.0 || (s + t) > 1.0)  % intersectP is outside Triangle
+    result = 0;
+    return;
+end
+
+result = 1;                      % intersectP is in Triangle
+end
+
+%% IsCollision
+% This is based upon the output of questions 2.5 and 2.6
+% Given a robot model (robot), and trajectory (i.e. joint state vector) (qMatrix)
+% and triangle obstacles in the environment (faces,vertex,faceNormals)
+function result = IsCollision(self,qMatrix,prismfaces,prismvertex,prismfaceNormals,returnOnceFound)
+if nargin < 5
+    returnOnceFound = true;
+end
+result = false;
+
+for qIndex = 1:size(qMatrix,1)
+    % Get the transform of every joint (i.e. start and end of every link)
+    tr = self.GetLinkPoses(qMatrix(qIndex,:));
+
+    % Go through each link and also each triangle face
+    for i = 1 : size(tr,3)-1    
+        for faceIndex = 1:size(prismfaces,1)
+            vertOnPlane = prismvertex(prismfaces(faceIndex,1)',:);
+            [intersectP,check] = LinePlaneIntersection(prismfaceNormals(faceIndex,:),vertOnPlane,tr(1:3,4,i)',tr(1:3,4,i+1)'); 
+            if check == 1 && self.IsIntersectionPointInsideTriangle(intersectP,prismvertex(prismfaces(faceIndex,:)',:))
+                plot3(intersectP(1),intersectP(2),intersectP(3),'g*');
+                display('Intersection');
+                result = true;
+%                 if returnOnceFound
+%                     return
 %                 end
-%                     self.cyton.model.animate(qMatrix(i,:));
-%                     [a,b] = self.updateEndEffectorPos();
-%                     
-%                     drawnow;                    
-%             end
-            % Plotting movement
-    %             figure(1)
-    %             plot3(x(1,:),x(2,:),x(3,:),'k.','LineWidth',1)
-    %             
-    %             if nargin == 5                                  %if no part supplied, move robot only
-    %                 for i = 1:steps
-    %                     self.model.animate(qMatrix(i,:));
-    %                     % add while STOP is pressed ....
-    %                 end
-    %             end
-    %             
-    %             
-    %             %controls both robot and part
-    %             if nargin == 6
-    %                 for i = 1:steps
-    %                     self.model.animate(qMatrix(i,:));
-    %                     varargin{1}.model.base = self.model.fkine(qMatrix(i,:))*trotx(pi/2);
-    %                     varargin{1}.model.animate(0);
-    %                     % add while STOP is pressed....
-    %                 end
-    %             end
-    %         end
-         end
-         function sim_cytonanimate(self,qMatrix)
-             self.cyton.model.animate(qMatrix);
-             drawnow;
-         end
-         %dfghj
+            end
+        end    
+    end
+end
+
+% add waypoints by determining cartesian points that the end effector could
+% follow
+
+
+end
+
          
     end
 end
